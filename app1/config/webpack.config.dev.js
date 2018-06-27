@@ -105,7 +105,7 @@ module.exports = {
             },
           },
           {
-            test: /\.(css|pcss)$/,
+            test: /\.(css|less|sass|pcss)$/,
             use:ext.extract(
               {
                 fallback: 'style-loader',
@@ -113,15 +113,15 @@ module.exports = {
                   {
                     loader:'css-loader',
                     options:{
-                    //后续是否还有loader
-                    importLoaders: 2,
-                    //模块化
-                    modules: true,
-                    //className
-                    localIdentName:'[path][name]-[local]-[hash:base64:5]',
-                    //压缩
-                    minimize:true
-                    }
+                      //后续是否还有loader
+                      importLoaders: 1,
+                      //模块化
+                      modules: true,
+                      //className
+                      localIdentName:'[path][name]-[local]-[hash:base64:5]',
+                      //压缩
+                      minimize:true,
+                    },
                   },
                   {
                     loader:'postcss-loader',
@@ -139,7 +139,44 @@ module.exports = {
                 ]
               }
             ),
-            exclude: '/node_modules/'
+            exclude: [/node_modules/]
+          },
+          {
+            test: /\.(css|less|sass|pcss)$/,
+            use:ext.extract(
+              {
+                fallback: 'style-loader',
+                use: [
+                  {
+                    loader:'css-loader',
+                    options:{
+                      //后续是否还有loader
+                      importLoaders: 1,
+                      //模块化
+                      //modules: true,
+                      //className
+                      //localIdentName:'[path][name]-[local]-[hash:base64:5]',
+                      //压缩
+                      minimize:true,
+                    },
+                  },
+                  {
+                    loader:'postcss-loader',
+                    options:{
+                      plugins:[
+                        require('autoprefixer')({ browsers: AUTOPREFIXER_BROWSERS }),
+                        require('postcss-cssnext')({
+                          warnForDuplicates:false
+                        }),
+                        require('precss')(),
+                      ],
+                      modules: true,
+                    }
+                  }
+                ]
+              }
+            ),
+            exclude: [/src/]
           },
           {
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],

@@ -3,7 +3,7 @@ var fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ext = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
@@ -119,23 +119,23 @@ module.exports = {
             },
           },
           {
-            test: /\.(css|pcss)$/,
-            use:ExtractTextPlugin.extract(
+            test: /\.(css|less|sass|pcss)$/,
+            use:ext.extract(
               {
                 fallback: 'style-loader',
                 use: [
                   {
                     loader:'css-loader',
                     options:{
-                    //后续是否还有loader
-                    importLoaders: 2,
-                    //模块化
-                    modules: true,
-                    //className
-                    localIdentName:'[path][name]-[local]-[hash:base64:5]',
-                    //压缩
-                    minimize:true
-                    }
+                      //后续是否还有loader
+                      importLoaders: 1,
+                      //模块化
+                      modules: true,
+                      //className
+                      localIdentName:'[path][name]-[local]-[hash:base64:5]',
+                      //压缩
+                      minimize:true,
+                    },
                   },
                   {
                     loader:'postcss-loader',
@@ -153,7 +153,44 @@ module.exports = {
                 ]
               }
             ),
-            exclude: '/node_modules/'
+            exclude: [/node_modules/]
+          },
+          {
+            test: /\.(css|less|sass|pcss)$/,
+            use:ext.extract(
+              {
+                fallback: 'style-loader',
+                use: [
+                  {
+                    loader:'css-loader',
+                    options:{
+                      //后续是否还有loader
+                      importLoaders: 1,
+                      //模块化
+                      //modules: true,
+                      //className
+                      //localIdentName:'[path][name]-[local]-[hash:base64:5]',
+                      //压缩
+                      minimize:true,
+                    },
+                  },
+                  {
+                    loader:'postcss-loader',
+                    options:{
+                      plugins:[
+                        require('autoprefixer')({ browsers: AUTOPREFIXER_BROWSERS }),
+                        require('postcss-cssnext')({
+                          warnForDuplicates:false
+                        }),
+                        require('precss')(),
+                      ],
+                      modules: true,
+                    }
+                  }
+                ]
+              }
+            ),
+            exclude: [/src/]
           },
           {
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
@@ -199,7 +236,7 @@ module.exports = {
       },
       sourceMap: shouldUseSourceMap,
     }),
-    new ExtractTextPlugin({
+    new ext({
       filename: cssFilename,
       allChunks: true
     }),

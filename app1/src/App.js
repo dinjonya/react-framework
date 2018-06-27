@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import pstyles from './pcsss/app.pcss'
-import styles from './index.css'
-
+import { Button } from 'antd';
+import 'antd/lib/button/style/css';        // 加载 CSS
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -27,6 +27,7 @@ class App extends Component {
     },'vendor')
     return (
       <div className={ pstyles.cont }>
+      <Button type='primary'>test button</Button>
         <span className={ pstyles.top }>first react demo</span>
         <span className={ pstyles.bottom }>test text</span>
         <Gadget />
